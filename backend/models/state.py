@@ -35,8 +35,8 @@ class GameState(BaseModel):
     current_number: Optional[int] = None
     guesses_remaining: Optional[int] = None
     winner: Optional[str] = None
-    red_score: int = 9
-    blue_score: int = 8
+    red_score: int = 0
+    blue_score: int = 0
     
     def add_player(self, player_id: str, name: str):
         self.players[player_id] = Player(id=player_id, name=name)

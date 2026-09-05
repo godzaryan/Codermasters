@@ -213,8 +213,8 @@ class ConnectionManager:
             room.game_state.winner = None
             room.game_state.history = []
             
-            room.game_state.red_score = 12 if board_size == 36 else 9
-            room.game_state.blue_score = 11 if board_size == 36 else 8
+            room.game_state.red_score = 0
+            room.game_state.blue_score = 0
             
             self._start_timer(room_id, room)
             await self.broadcast_state(room_id)
@@ -276,7 +276,7 @@ class ConnectionManager:
                             
                             if card.color == player.team:
                                 # Correct guess
-                                self._decrement_score(room, card.color)
+                                self._increment_score(room, card.color)
                                 room.game_state.guesses_remaining -= 1
                                 if room.game_state.guesses_remaining <= 0:
                                     self._switch_turn(room_id, room)
@@ -284,7 +284,7 @@ class ConnectionManager:
                                 # Assassin
                                 if room.game_state.settings.forgiving_assassin:
                                     enemy_team = "blue" if player.team == "red" else "red"
-                                    self._decrement_score(room, enemy_team, amount=3)
+                                    self._increment_score(room, enemy_team, amount=3)
                                     if room.game_state.winner is None:
                                         self._switch_turn(room_id, room)
                                 else:
@@ -295,7 +295,7 @@ class ConnectionManager:
                                 self._switch_turn(room_id, room)
                             else:
                                 # Enemy team
-                                self._decrement_score(room, card.color)
+                                self._increment_score(room, card.color)
                                 self._switch_turn(room_id, room)
                             
                             if room.game_state.history:
@@ -315,17 +315,19 @@ class ConnectionManager:
         room.game_state.guesses_remaining = None
         self._start_timer(room_id, room)
 
-    def _decrement_score(self, room: Room, team: str, amount: int = 1):
+    def _increment_score(self, room: Room, team: str, amount: int = 1):
         if team == "red":
-            room.game_state.red_score -= amount
-            if room.game_state.red_score <= 0:
-                room.game_state.red_score = 0
+            room.game_state.red_score += amount
+            total_red = sum(1 for c in room.game_state.cards if c.color == "red")
+            if room.game_state.red_score >= total_red:
+                room.game_state.red_score = total_red
                 room.game_state.winner = "red"
                 room.game_state.phase = "game_over"
         elif team == "blue":
-            room.game_state.blue_score -= amount
-            if room.game_state.blue_score <= 0:
-                room.game_state.blue_score = 0
+            room.game_state.blue_score += amount
+            total_blue = sum(1 for c in room.game_state.cards if c.color == "blue")
+            if room.game_state.blue_score >= total_blue:
+                room.game_state.blue_score = total_blue
                 room.game_state.winner = "blue"
                 room.game_state.phase = "game_over"
             
