@@ -49,10 +49,13 @@ export function TeamPanel({ team, cardsLeft, phase, spymaster, operatives, onJoi
       </div>
 
       {/* Cards Left Counter */}
-      <div className="flex items-center justify-center gap-3">
+      <div className="flex flex-col items-center justify-center gap-1 my-2">
+        <span className="text-white/70 text-[10px] font-bold uppercase tracking-[0.2em]">
+          Remaining Words
+        </span>
         <span 
-          className="text-4xl font-black text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] tracking-tighter" 
-          style={{ WebkitTextStroke: `1px ${textStrokeColor}`}}
+          className="text-5xl font-black text-white drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] tracking-tighter" 
+          style={{ WebkitTextStroke: `2px ${textStrokeColor}`}}
         >
           {phase === "lobby" ? "-" : cardsLeft}
         </span>
