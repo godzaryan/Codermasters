@@ -134,7 +134,6 @@ export function useGameSocket({ roomId, clientId, playerName, onHostDisconnected
       clearInterval(pingInterval);
       ws.close();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roomId, clientId, playerName]);
 
   const joinTeam = (team: "red" | "blue" | "spectator", role: "spymaster" | "operative" | "spectator") => {

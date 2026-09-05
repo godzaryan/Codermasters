@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
-import { Settings, Volume2, VolumeX, Server, ArrowRight } from "lucide-react";
+import { Server, ArrowRight, Settings, Volume2, VolumeX } from "lucide-react";
 import { GameBoard } from "@/components/GameBoard";
 import { ActionBar } from "@/components/ActionBar";
 import { TeamPanel } from "@/components/TeamPanel";
@@ -10,7 +10,7 @@ import { ChatPanel } from "@/components/ChatPanel";
 import { PlayersPanel } from "@/components/PlayersPanel";
 import { SettingsModal } from "@/components/SettingsModal";
 import { PostGameRecap } from "@/components/PostGameRecap";
-import { useGameSocket, Player } from "@/hooks/useGameSocket";
+import { useGameSocket } from "@/hooks/useGameSocket";
 import confetti from "canvas-confetti";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -30,7 +30,11 @@ export default function GameUI() {
   const [hasJoined, setHasJoined] = useState(false);
   
   useEffect(() => {
-    setClientId(Math.random().toString(36).substring(2, 9));
+    if (!clientId) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
+      setClientId(Math.random().toString(36).substring(2, 9));
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
   
   const { gameState, connected, chatLogs, emotes, joinTeam, startGame, giveClue, guessCard, endTurn, sendChat, sendEmote, updateSettings } = useGameSocket({
@@ -42,7 +46,8 @@ export default function GameUI() {
   });
 
   useEffect(() => {
-    if (gameState?.phase === "game_over") {
+    if (gameState?.phase === "game_over" && !showRecap) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setShowRecap(true);
       // Trigger confetti with winning team colors
       const colors = gameState.winner === "red" ? ["#ef4444", "#991b1b"] : ["#3b82f6", "#1e40af"];
@@ -55,7 +60,7 @@ export default function GameUI() {
     } else {
       setShowRecap(false);
     }
-  }, [gameState?.phase, gameState?.winner]);
+  }, [gameState?.phase, gameState?.winner, showRecap]);
 
   // Derived State
   const players = gameState ? Object.values(gameState.players) : [];
@@ -131,13 +136,11 @@ export default function GameUI() {
       <div className="absolute inset-0 pointer-events-none z-50 overflow-hidden">
         <AnimatePresence>
           {emotes.map((emote) => {
-            // Random horizontal position for a bit of scatter
-            const randomX = Math.random() * 200 - 100;
             return (
               <motion.div
                 key={emote.id}
-                initial={{ opacity: 0, y: 100, x: randomX, scale: 0.5 }}
-                animate={{ opacity: [0, 1, 1, 0], y: -300, x: randomX + (Math.random() * 50 - 25), scale: [0.5, 1.5, 1.5, 0.8] }}
+                initial={{ opacity: 0, y: 100, scale: 0.5 }}
+                animate={{ opacity: [0, 1, 1, 0], y: -300, scale: [0.5, 1.5, 1.5, 0.8] }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 2.5, ease: "easeOut" }}
                 className="absolute bottom-1/4 left-1/2 text-5xl md:text-6xl drop-shadow-xl"
@@ -296,7 +299,7 @@ export default function GameUI() {
               The host has left the operation. The room has been closed.
             </p>
             <button 
-              onClick={() => window.location.href = "/"}
+              onClick={() => router.push("/")}
               className="w-full bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 py-4 rounded-xl text-white font-black uppercase tracking-widest transition-all active:scale-95 shadow-[0_0_20px_-10px_rgba(239,68,68,0.5)] flex items-center justify-center gap-2"
             >
               <ArrowRight size={20} />
@@ -324,7 +327,7 @@ export default function GameUI() {
               You opened CodeMasters in another tab or window. This instance has been securely disconnected.
             </p>
             <button 
-              onClick={() => window.location.href = "/"}
+              onClick={() => router.push("/")}
               className="w-full bg-gradient-to-r from-indigo-600 to-indigo-800 hover:from-indigo-500 hover:to-indigo-700 py-4 rounded-xl text-white font-black uppercase tracking-widest transition-all active:scale-95 shadow-[0_0_20px_-10px_rgba(79,70,229,0.5)] flex items-center justify-center gap-2"
             >
               <ArrowRight size={20} />

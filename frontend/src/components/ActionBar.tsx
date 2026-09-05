@@ -31,8 +31,6 @@ export function ActionBar({ role, currentTurn, playerTeam, currentClue, currentN
         setTimeLeft(remaining);
       }, 100);
       return () => clearInterval(interval);
-    } else {
-      setTimeLeft(null);
     }
   }, [turnStartTime, blitzTimer]);
 

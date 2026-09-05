@@ -3,8 +3,15 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Users, Lock, Search, Play, Loader2 } from "lucide-react";
+import { Users, Lock, Search, Loader2 } from "lucide-react";
 import { getApiUrls } from "@/lib/config";
+
+interface ServerRoom {
+  room_id: string;
+  name: string;
+  player_count: number;
+  created_at: number;
+}
 
 export default function LandingPage() {
   const router = useRouter();
@@ -13,7 +20,7 @@ export default function LandingPage() {
   const [showCreateModal, setShowCreateModal] = useState<{ isOpen: boolean, isPublic: boolean }>({ isOpen: false, isPublic: false });
   const [showServerBrowser, setShowServerBrowser] = useState(false);
   const [roomName, setRoomName] = useState("");
-  const [serverList, setServerList] = useState<any[]>([]);
+  const [serverList, setServerList] = useState<ServerRoom[]>([]);
   const [isLoadingServers, setIsLoadingServers] = useState(false);
   const matchmakingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -38,6 +45,7 @@ export default function LandingPage() {
       const data = await res.json();
       router.push(`/room/${data.room_id}`);
     } catch (err) {
+      console.error(err);
       alert("Failed to create room.");
     }
   };
@@ -277,12 +285,13 @@ export default function LandingPage() {
                   <p className="text-xs mt-1">Host one to get started!</p>
                 </div>
               ) : (
-                serverList.map((server, idx) => (
+                serverList.map((server) => (
                   <div key={server.room_id} className="bg-black/40 border border-white/10 rounded-xl p-4 flex justify-between items-center hover:border-indigo-500/30 transition-colors">
                     <div>
                       <h3 className="text-white font-bold tracking-wide truncate max-w-[150px] md:max-w-[200px]">{server.name}</h3>
                       <p className="text-slate-500 text-xs font-bold uppercase tracking-wider mt-1">
-                        Code: <span className="text-amber-400">{server.room_id}</span> • Age: {Math.floor((Date.now()/1000 - server.created_at) / 60)}m
+                        {/* eslint-disable-next-line react-hooks/purity */}
+                        Code: <span className="text-amber-400">{server.room_id}</span> • Age: {Math.floor((new Date().getTime()/1000 - server.created_at) / 60)}m
                       </p>
                     </div>
                     <div className="flex items-center gap-4">

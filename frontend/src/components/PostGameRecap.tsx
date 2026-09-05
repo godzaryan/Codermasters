@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Network } from "lucide-react";
+import { Network, X } from "lucide-react";
 
 export interface HistoryEntry {
   clue: string;
