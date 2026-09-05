@@ -19,4 +19,3 @@ echo Starting Next.js frontend on port 80...
 :: Ensure you run this script as Administrator so it can bind to port 80!
 call npm start -- -p 80
 
-pause

@@ -28,4 +28,3 @@ echo Starting FastAPI on port 6969...
 :: Using uvicorn to run the FastAPI app, listening on all interfaces (0.0.0.0)
 uvicorn main:app --host 0.0.0.0 --port 6969
 
-pause
