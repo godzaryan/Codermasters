@@ -196,7 +196,7 @@ export default function GameUI() {
         {/* LEFT COLUMN: Blue Team */}
         <TeamPanel 
           team="blue" 
-          cardsLeft={gameState?.blue_score ?? 0}
+          cardsLeft={gameState?.blue_score ?? 8}
           phase={gameState?.phase || "lobby"} 
           spymaster={blueSpymaster} 
           operatives={blueOperatives} 
@@ -254,7 +254,7 @@ export default function GameUI() {
         {/* RIGHT COLUMN: Red Team */}
         <TeamPanel 
           team="red" 
-          cardsLeft={gameState?.red_score ?? 0} 
+          cardsLeft={gameState?.red_score ?? 9} 
           phase={gameState?.phase || "lobby"}
           spymaster={redSpymaster} 
           operatives={redOperatives} 
