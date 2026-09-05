@@ -231,7 +231,7 @@ class ConnectionManager:
                     
                     room.game_state.current_clue = word
                     room.game_state.current_number = num_val
-                    room.game_state.guesses_remaining = num_val + 1 if num_val != 999 else 999
+                    room.game_state.guesses_remaining = num_val
                     
                     room.game_state.history.append({
                         "clue": word,
