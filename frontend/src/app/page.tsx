@@ -2,8 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import { Users, Lock, Search, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Users, Lock, Search, Loader2, X } from "lucide-react";
 import { getApiUrls } from "@/lib/config";
 
 interface ServerRoom {
@@ -22,6 +22,7 @@ export default function LandingPage() {
   const [roomName, setRoomName] = useState("");
   const [serverList, setServerList] = useState<ServerRoom[]>([]);
   const [isLoadingServers, setIsLoadingServers] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
   const matchmakingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   // Clear timeout on unmount
@@ -46,7 +47,7 @@ export default function LandingPage() {
       router.push(`/room/${data.room_id}`);
     } catch (err) {
       console.error(err);
-      alert("Failed to create room.");
+      setErrorMsg("Failed to create room.");
     }
   };
 
@@ -91,7 +92,7 @@ export default function LandingPage() {
     } catch (err) {
       console.error(err);
       setIsMatchmaking(false);
-      alert("Failed to connect to matchmaking server.");
+      setErrorMsg("Failed to connect to matchmaking server.");
     }
   };
 
@@ -109,6 +110,30 @@ export default function LandingPage() {
 
   return (
     <main className="min-h-[100dvh] w-full font-sans flex flex-col items-center justify-center relative">
+      <AnimatePresence>
+        {errorMsg && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
+          >
+            <div className="bg-zinc-900 border border-red-500/50 rounded-2xl p-6 max-w-sm w-full shadow-2xl flex flex-col items-center text-center">
+              <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mb-4">
+                <X className="w-6 h-6 text-red-500" />
+              </div>
+              <h3 className="text-xl font-bold text-white mb-2 uppercase tracking-wide">Error</h3>
+              <p className="text-zinc-400 mb-6 font-medium">{errorMsg}</p>
+              <button 
+                onClick={() => setErrorMsg(null)}
+                className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 rounded-xl transition-colors uppercase tracking-widest text-sm"
+              >
+                Dismiss
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <div className="relative z-10 flex flex-col items-center w-full max-w-md px-6 py-12">
         <div className="text-center mb-12 relative">
