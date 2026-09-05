@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Server, ArrowRight, Settings, Volume2, VolumeX } from "lucide-react";
 import { GameBoard } from "@/components/GameBoard";
 import { ActionBar } from "@/components/ActionBar";
@@ -16,6 +16,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export default function GameUI() {
   const params = useParams();
+  const router = useRouter();
   const roomId = params.roomId as string;
 
   const [soundEnabled, setSoundEnabled] = useState(true);
