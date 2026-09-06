@@ -146,7 +146,7 @@ export default function LandingPage() {
           <h1 className="text-5xl font-black text-white tracking-tighter uppercase drop-shadow-2xl relative z-10">
             Code<span className="text-amber-400">Masters</span>
           </h1>
-          <p className="text-amber-400 mt-2 font-black tracking-widest uppercase text-xs animate-pulse">AUTO-DEPLOYMENT ACTIVE</p>
+          <p className="text-slate-400 mt-2 font-medium tracking-wide uppercase text-sm">Tactical Espionage Action</p>
         </div>
 
         {isMatchmaking ? (
